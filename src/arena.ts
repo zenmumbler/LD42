@@ -23,6 +23,13 @@ export const enum Stick {
 	Frozen = 0x80
 }
 
+export const enum Direction {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+}
+
 export class Arena {
 	private sticks_: ConstEnumArray8View<Stick>;
 
@@ -138,6 +145,14 @@ export class Arena {
 		return [stickX + GRID_PAD - 1, y + GRID_PAD];
 	}
 
+	stickCoordAffectingDirection(x: number, y: number, dir: Direction) {
+		if (dir === Direction.LEFT) { return this.stickCoordAffectingLeft(x, y); }
+		if (dir === Direction.RIGHT) { return this.stickCoordAffectingRight(x, y); }
+		if (dir === Direction.UP) { return this.stickCoordAffectingUp(x, y); }
+		if (dir === Direction.DOWN) { return this.stickCoordAffectingDown(x, y); }
+		return undefined;
+	}
+
 	/**
 	 * Given an entity that is 1x1 tile in size, can it
 	 * move LEFT from the tile with top left corner at x,y?
@@ -220,5 +235,13 @@ export class Arena {
 		}
 
 		return true;
+	}
+
+	canMove(x: number, y: number, dir: Direction) {
+		if (dir === Direction.LEFT) { return this.canMoveLeft(x, y); }
+		if (dir === Direction.RIGHT) { return this.canMoveRight(x, y); }
+		if (dir === Direction.UP) { return this.canMoveUp(x, y); }
+		if (dir === Direction.DOWN) { return this.canMoveDown(x, y); }
+		return false;
 	}
 }
