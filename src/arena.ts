@@ -98,11 +98,127 @@ export class Arena {
 		return false;
 	}
 
-	canMoveHoriz(x1: number, x2: number, y: number) {
-
+	stickCoordAffectingLeft(x: number, y: number) {
+		x -= GRID_PAD - 1;
+		y -= GRID_PAD - 1;
+		if (x < 1 || y < 0 || x > GRID_W || y > GRID_H) {
+			return undefined;
+		}
+		const stickY = y + ((x ^ y) & 1) | (x & 1);
+		return [x + GRID_PAD - 1, stickY + GRID_PAD - 1];
 	}
 
-	canMoveVert(x1: number, x2: number, y: number) {
-		
+	stickCoordAffectingRight(x: number, y: number) {
+		x -= GRID_PAD - 1;
+		y -= GRID_PAD - 1;
+		if (x < 0 || y < 0 || x >= GRID_W || y > GRID_H) {
+			return undefined;
+		}
+		const stickY = y + (~(x ^ y) & 1) | (~x & 1);
+		return [x + GRID_PAD, stickY + GRID_PAD - 1];
+	}
+
+	stickCoordAffectingUp(x: number, y: number) {
+		x -= GRID_PAD - 1;
+		y -= GRID_PAD - 1;
+		if (x < 0 || y < 1 || x > GRID_W || y > GRID_H) {
+			return undefined;
+		}
+		const stickX = ((x + (~y & 1)) & ~1) + (y & 1);
+		return [stickX + GRID_PAD - 1, y + GRID_PAD - 1];
+	}
+
+	stickCoordAffectingDown(x: number, y: number) {
+		x -= GRID_PAD - 1;
+		y -= GRID_PAD - 1;
+		if (x < 0 || y < 0 || x > GRID_W || y >= GRID_H) {
+			return undefined;
+		}
+		const stickX = ((x + (y & 1)) & ~1) + (~y & 1);
+		return [stickX + GRID_PAD - 1, y + GRID_PAD];
+	}
+
+	/**
+	 * Given an entity that is 1x1 tile in size, can it
+	 * move LEFT from the tile with top left corner at x,y?
+	 */
+	canMoveLeft(x: number, y: number) {
+		if (x <= 0) {
+			return false;
+		}
+		const stickCoord = this.stickCoordAffectingLeft(x, y);
+		if (stickCoord === undefined) {
+			return true;
+		}
+
+		const stick = this.stickAt(stickCoord[0], stickCoord[1]);
+		if ((stick & Stick.OrientMask) === Stick.Vert && (stick & Stick.Frozen)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Given an entity that is 1x1 tile in size, can it
+	 * move RIGHT from the tile with top left corner at x,y?
+	 */
+	canMoveRight(x: number, y: number) {
+		if (x >= ARENA_W - GRID_PAD) {
+			return false;
+		}
+		const stickCoord = this.stickCoordAffectingRight(x, y);
+		if (stickCoord === undefined) {
+			return true;
+		}
+
+		const stick = this.stickAt(stickCoord[0], stickCoord[1]);
+		if ((stick & Stick.OrientMask) === Stick.Vert && (stick & Stick.Frozen)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Given an entity that is 1x1 tile in size, can it
+	 * move UP from the tile with top left corner at x,y?
+	 */
+	canMoveUp(x: number, y: number) {
+		if (y <= 0) {
+			return false;
+		}
+		const stickCoord = this.stickCoordAffectingUp(x, y);
+		if (stickCoord === undefined) {
+			return true;
+		}
+
+		const stick = this.stickAt(stickCoord[0], stickCoord[1]);
+		if ((stick & Stick.OrientMask) === Stick.Horiz && (stick & Stick.Frozen)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Given an entity that is 1x1 tile in size, can it
+	 * move RIGHT from the tile with top left corner at x,y?
+	 */
+	canMoveDown(x: number, y: number) {
+		if (y >= ARENA_H - GRID_PAD) {
+			return false;
+		}
+		const stickCoord = this.stickCoordAffectingDown(x, y);
+		if (stickCoord === undefined) {
+			return true;
+		}
+
+		const stick = this.stickAt(stickCoord[0], stickCoord[1]);
+		if ((stick & Stick.OrientMask) === Stick.Horiz && (stick & Stick.Frozen)) {
+			return false;
+		}
+
+		return true;
 	}
 }
