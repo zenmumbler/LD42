@@ -14,5 +14,8 @@
     "rollup": "^0.64.1",
     "rollup-plugin-node-resolve": "^3.3.0",
     "typescript": "^3.0.1"
+  },
+  "dependencies": {
+    "@stardazed/array": "^0.4.0"
   }
 }
