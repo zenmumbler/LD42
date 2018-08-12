@@ -24,8 +24,7 @@ class ArenaView {
 
 		const makeStickElem = (x: number, y: number, stick: Stick) => {
 			const elem = document.createElement("div");
-			const orient = stick & Stick.OrientMask;
-			elem.className = `stick ${orient === Stick.Vert ? "vert" : ""}`;
+			elem.className = `stick ${stick === Stick.Vert ? "vert" : ""}`;
 
 			const coord = this.pixelCoordForPosition(x, y);
 			elem.style.left = `${coord[0]}px`;
@@ -36,7 +35,7 @@ class ArenaView {
 
 		for (let y = 0; y < ARENA_H; ++y) {
 			for (let x = 0; x < ARENA_W; ++x) {
-				const stick = arena.stickAt(x, y);
+				const stick = arena.stickOrientationAt(x, y);
 				if (stick === Stick.None) {
 					this.sticks.push(null);
 				}

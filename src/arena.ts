@@ -60,8 +60,8 @@ export class Arena {
 
 	resetSticks() {
 		const _ = Stick.None;
-		const H = Stick.Horiz | Stick.Frozen;
-		const V = Stick.Vert | Stick.Frozen;
+		const H = Stick.Horiz;
+		const V = Stick.Vert;
 		// tslint:disable:indent
 		this.sticks_.set([
 			V, V, V, H, H, V, H, V,
@@ -85,10 +85,33 @@ export class Arena {
 		return this.sticks_[offset];
 	}
 
-	setStickAt(x: number, y: number, stick: Stick) {
+	stickOrientationAt(x: number, y: number): Stick {
 		const offset = this.stickArrayOffset(x, y);
-		if (offset > -1) {
+		if (offset < 0) {
+			return Stick.None;
+		} 
+		return this.sticks_[offset] & Stick.OrientMask;
+	}
+
+	setStickOrientationAt(x: number, y: number, stick: Stick) {
+		stick = stick & Stick.OrientMask;
+		const offset = this.stickArrayOffset(x, y);
+		if (offset > -1 && this.sticks_[offset] !== Stick.None) {
 			this.sticks_[offset] = stick;			
+		} 
+	}
+
+	freezeStickAt(x: number, y: number) {
+		const offset = this.stickArrayOffset(x, y);
+		if (offset > -1 && this.sticks_[offset] !== Stick.None) {
+			this.sticks_[offset] |= Stick.Frozen;			
+		} 
+	}
+
+	thawStickAt(x: number, y: number) {
+		const offset = this.stickArrayOffset(x, y);
+		if (offset > -1 && this.sticks_[offset] !== Stick.None) {
+			this.sticks_[offset] &= ~Stick.Frozen;			
 		} 
 	}
 
@@ -99,7 +122,7 @@ export class Arena {
 		}
 		cur = cur & Stick.OrientMask;
 		if (cur !== Stick.None) {
-			this.setStickAt(x, y, Stick.OrientMask - cur);
+			this.setStickOrientationAt(x, y, Stick.OrientMask - cur);
 			return true;
 		}
 		return false;
