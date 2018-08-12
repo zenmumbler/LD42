@@ -2,7 +2,7 @@
  * Blarbs - a Ludum Dare 42 Entry by Arthur Langereis (@zenmumbler)
  */
 
-import { Arena, ARENA_W, ARENA_H, Stick } from "./arena";
+import { Arena, ARENA_W, ARENA_H, Stick, Direction } from "./arena";
 
 const enum Actor {
 	Player,
@@ -48,6 +48,10 @@ class ArenaView {
 		}
 	}
 
+	stickElemAt(x: number, y: number) {
+		return this.sticks[(y * ARENA_W) + x];
+	}
+
 	pixelCoordForPosition(x: number, y: number) {
 		return [x * GRID_TILE_DIM, y * GRID_TILE_DIM];
 	}
@@ -69,6 +73,15 @@ enum Key {
 	RIGHT = 39,
 }
 
+function movementForDirection(dir: Direction) {
+	switch (dir) {
+		case Direction.LEFT: return { dx: -1, dy: 0 };
+		case Direction.RIGHT: return { dx: 1, dy: 0 };
+		case Direction.UP: return { dx: 0, dy: -1 };
+		case Direction.DOWN: return { dx: 0, dy: 1 };
+	}
+}
+
 export function main() {
 	const root = document.querySelector(".arena")! as HTMLElement;
 	const arena = new Arena();
@@ -81,20 +94,41 @@ export function main() {
 	blarb.className = "actor blarb";
 	root.appendChild(blarb);
 
-	const move = (dx: number, dy: number) => {
+	const move = (dir: Direction) => {
+		if (! arena.canMove(blarbX, blarbY, dir)) {
+			return;
+		}
+		const stickCoord = arena.stickCoordAffectingDirection(blarbX, blarbY, dir);
+		if (stickCoord) {
+			if (dir < Direction.UP) {
+				arena.setStickOrientationAt(stickCoord[0], stickCoord[1], Stick.Horiz);
+				const elem = view.stickElemAt(stickCoord[0], stickCoord[1]);
+				if (elem) {
+					elem.classList.remove("vert");
+				}
+			}
+			else {
+				arena.setStickOrientationAt(stickCoord[0], stickCoord[1], Stick.Vert);
+				const elem = view.stickElemAt(stickCoord[0], stickCoord[1]);
+				if (elem) {
+					elem.classList.add("vert");
+				}
+			}
+		}
+
+		const { dx, dy } = movementForDirection(dir);
 		blarbX += dx;
 		blarbY += dy;
 		blarb.style.left = `${blarbX * GRID_TILE_DIM}px`;
 		blarb.style.top = `${blarbY * GRID_TILE_DIM}px`;
 	};
-	move(0, 0);
 
 	document.onkeydown = (evt) => {
 		switch (evt.keyCode) {
-			case Key.UP: if (arena.canMoveUp(blarbX, blarbY)) { move(0, -1); } break;
-			case Key.DOWN: if (arena.canMoveDown(blarbX, blarbY)) { move(0, 1); } break;
-			case Key.LEFT: if (arena.canMoveLeft(blarbX, blarbY)) { move(-1, 0); } break;
-			case Key.RIGHT: if (arena.canMoveRight(blarbX, blarbY)) { move(1, 0); } break;
+			case Key.UP: move(Direction.UP); break;
+			case Key.DOWN: move(Direction.DOWN); break;
+			case Key.LEFT: move(Direction.LEFT); break;
+			case Key.RIGHT: move(Direction.RIGHT); break;
 		}
 	};
 }
