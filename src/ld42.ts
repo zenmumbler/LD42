@@ -24,7 +24,8 @@ class ArenaView {
 
 		const makeStickElem = (x: number, y: number, stick: Stick) => {
 			const elem = document.createElement("div");
-			elem.className = `stick ${stick === Stick.Vert ? "vert" : ""}`;
+			const orient = stick & Stick.OrientMask;
+			elem.className = `stick ${orient === Stick.Vert ? "vert" : ""}`;
 
 			const coord = this.pixelCoordForPosition(x, y);
 			elem.style.left = `${coord[0]}px`;
@@ -60,7 +61,41 @@ class ArenaView {
 	}
 }
 
+enum Key {
+	NONE = 0,
+
+	UP = 38,
+	DOWN = 40,
+	LEFT = 37,
+	RIGHT = 39,
+}
+
 export function main() {
+	const root = document.querySelector(".arena")! as HTMLElement;
 	const arena = new Arena();
-	const view = new ArenaView(arena, document.querySelector(".arena")! as HTMLElement);
+	const view = new ArenaView(arena, root);
+	(window as any).view = view;
+
+	let blarbX = 0;
+	let blarbY = 0;
+	const blarb = document.createElement("div");
+	blarb.className = "actor blarb";
+	root.appendChild(blarb);
+
+	const move = (dx: number, dy: number) => {
+		blarbX += dx;
+		blarbY += dy;
+		blarb.style.left = `${blarbX * GRID_TILE_DIM}px`;
+		blarb.style.top = `${blarbY * GRID_TILE_DIM}px`;
+	};
+	move(0, 0);
+
+	document.onkeydown = (evt) => {
+		switch (evt.keyCode) {
+			case Key.UP: if (arena.canMoveUp(blarbX, blarbY)) { move(0, -1); } break;
+			case Key.DOWN: if (arena.canMoveDown(blarbX, blarbY)) { move(0, 1); } break;
+			case Key.LEFT: if (arena.canMoveLeft(blarbX, blarbY)) { move(-1, 0); } break;
+			case Key.RIGHT: if (arena.canMoveRight(blarbX, blarbY)) { move(1, 0); } break;
+		}
+	};
 }

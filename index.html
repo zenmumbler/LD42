@@ -28,6 +28,7 @@
 	}
 	.stick {
 		position: absolute;
+		z-index: 1;
 		width: 110px;
 		height: 4px;
 		background: #40C;
@@ -42,11 +43,22 @@
 		left: 53px; top: -2px;
 		width: 8px; height: 8px;
 		background: green;
-		z-index: 1;
+		z-index: 2;
 		border-radius: 4px;
 	}
 	.stick.vert {
 		transform: translate(-55px, -2px) rotateZ(90deg);
+	}
+	.actor {
+		position: absolute;
+		z-index: 3;
+	}
+	.blarb {
+		box-sizing: border-box;
+		width: 57px;
+		height: 57px;
+		border: 3px;
+		background: green;
 	}
 </style>
 

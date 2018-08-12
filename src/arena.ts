@@ -53,8 +53,8 @@ export class Arena {
 
 	resetSticks() {
 		const _ = Stick.None;
-		const H = Stick.Horiz;
-		const V = Stick.Vert;
+		const H = Stick.Horiz | Stick.Frozen;
+		const V = Stick.Vert | Stick.Frozen;
 		// tslint:disable:indent
 		this.sticks_.set([
 			V, V, V, H, H, V, H, V,
