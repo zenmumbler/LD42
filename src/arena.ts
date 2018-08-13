@@ -30,6 +30,13 @@ export const enum Direction {
 	DOWN
 }
 
+export interface Quad {
+	top: number[]; 
+	left: number[];
+	right: number[];
+	bottom: number[];
+}
+
 export class Arena {
 	private sticks_: ConstEnumArray8View<Stick>;
 
@@ -115,6 +122,17 @@ export class Arena {
 		} 
 	}
 
+	freezeQuad(quad: Quad) {
+		this.freezeStickAt(quad.top[0], quad.top[1]);
+		this.freezeStickAt(quad.left[0], quad.left[1]);
+		this.freezeStickAt(quad.right[0], quad.right[1]);
+		this.freezeStickAt(quad.bottom[0], quad.bottom[1]);
+	}
+
+	topLeftOfQuad(quad: Quad) {
+		return [quad.left[0], quad.top[1]];
+	}
+
 	rotateStickAt(x: number, y: number) {
 		let cur = this.stickAt(x, y);
 		if (cur & Stick.Frozen) {
@@ -126,6 +144,88 @@ export class Arena {
 			return true;
 		}
 		return false;
+	}
+
+	quadUpFromStickAt(x: number, y: number): Quad {
+		return {
+			bottom: [x, y],
+			left: [x - 1, y - 1],
+			right: [x + 1, y - 1],
+			top: [x, y - 2],
+		};
+	}
+
+	quadDownFromStickAt(x: number, y: number): Quad {
+		return {
+			top: [x, y],
+			left: [x - 1, y + 1],
+			right: [x + 1, y + 1],
+			bottom: [x, y + 2],
+		};
+	}
+
+	quadLeftFromStickAt(x: number, y: number): Quad {
+		return {
+			right: [x, y],
+			top: [x - 1, y - 1],
+			bottom: [x - 1, y + 1],
+			left: [x - 2, y],
+		};
+	}
+
+	quadRightFromStickAt(x: number, y: number): Quad {
+		return {
+			left: [x, y],
+			top: [x + 1, y - 1],
+			bottom: [x + 1, y + 1],
+			right: [x + 2, y],
+		};
+	}
+
+	quadRelativeToStickAt(x: number, y: number, dir: Direction) {
+		if (dir === Direction.UP) { return this.quadUpFromStickAt(x, y); }
+		if (dir === Direction.LEFT) { return this.quadLeftFromStickAt(x, y); }
+		if (dir === Direction.RIGHT) { return this.quadRightFromStickAt(x, y); }
+		if (dir === Direction.DOWN) { return this.quadDownFromStickAt(x, y); }
+		throw new RangeError();
+	}
+
+	quadIsBox(quad: Quad) {
+		const { top, left, right, bottom } = quad;
+		const t = this.stickOrientationAt(top[0], top[1]);
+		const l = this.stickOrientationAt(left[0], left[1]);
+		const r = this.stickOrientationAt(right[0], right[1]);
+		const b = this.stickOrientationAt(bottom[0], bottom[1]);
+		return t === Stick.Horiz && b === Stick.Horiz &&
+			l === Stick.Vert && r === Stick.Vert;
+	}
+
+	isBoxUpFromStickAt(x: number, y: number) {
+		const quad = this.quadUpFromStickAt(x, y);
+		return this.quadIsBox(quad);
+	}
+
+	isBoxDownFromStickAt(x: number, y: number) {
+		const quad = this.quadDownFromStickAt(x, y);
+		return this.quadIsBox(quad);
+	}
+
+	isBoxLeftFromStickAt(x: number, y: number) {
+		const quad = this.quadLeftFromStickAt(x, y);
+		return this.quadIsBox(quad);
+	}
+
+	isBoxRightFromStickAt(x: number, y: number) {
+		const quad = this.quadRightFromStickAt(x, y);
+		return this.quadIsBox(quad);
+	}
+
+	isBoxRelativeToStickAt(x: number, y: number, dir: Direction) {
+		if (dir === Direction.UP) { return this.isBoxUpFromStickAt(x, y); }
+		if (dir === Direction.LEFT) { return this.isBoxLeftFromStickAt(x, y); }
+		if (dir === Direction.RIGHT) { return this.isBoxRightFromStickAt(x, y); }
+		if (dir === Direction.DOWN) { return this.isBoxDownFromStickAt(x, y); }
+		throw new RangeError();
 	}
 
 	stickCoordAffectingLeft(x: number, y: number) {
