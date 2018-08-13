@@ -1,4 +1,5 @@
 // @ts-check
+import resolve from "rollup-plugin-node-resolve";
 const banner = `/**
  * Squix - a Ludum Dare 42 Entry by Arthur Langereis (@zenmumbler)
  * https://github.com/zenmumbler/LD42
@@ -15,6 +16,7 @@ export default [
 			},
 		],
 		plugins: [
+			resolve({ browser: true })
 		]
 	}
 ];

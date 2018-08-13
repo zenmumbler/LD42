@@ -1,5 +1,6 @@
 dependencies:
   '@stardazed/array': 0.4.0
+  '@zenmumbler/mini-dom': 1.0.0
 devDependencies:
   rollup: 0.64.1
   rollup-plugin-node-resolve: 3.3.0
@@ -20,6 +21,11 @@ packages:
     resolution:
       integrity: sha512-sWSjw+bYW/2W+1V3m8tVsm9PKJcxk3NHN7oRqNUfEdofKg0Imbdu1dQbFvLKjZQXEDXRN6IfSMACjJ7Wv4NGCQ==
       tarball: /@types%2fnode/-/node-10.5.8.tgz
+  /@zenmumbler/mini-dom/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-DzmrttnQge20zKsV+2Vicfy7CbNq2Rr4CKmP6e/ustzUqg26P9TXoETWKZqAlxsweBOi2oP7cXrHcgx5oFqUrA==
+      tarball: /@zenmumbler%2fmini-dom/-/mini-dom-1.0.0.tgz
   /builtin-modules/2.0.0:
     dev: true
     engines:
@@ -68,6 +74,7 @@ shrinkwrapMinorVersion: 8
 shrinkwrapVersion: 3
 specifiers:
   '@stardazed/array': ^0.4.0
+  '@zenmumbler/mini-dom': ^1.0.0
   rollup: ^0.64.1
   rollup-plugin-node-resolve: ^3.3.0
   typescript: ^3.0.1
