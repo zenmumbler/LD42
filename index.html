@@ -5,10 +5,65 @@
 <title>Blarbs</title>
 
 <style>
+	:root {
+		--color-purple: rgb(59, 0, 48);
+		--color-red: rgb(244, 58, 50);
+		--color-orange: rgb(232, 152, 50);
+		--color-yellow: rgb(246, 221, 85);
+		--color-teal: rgb(18, 140, 136);
+	}
 	@font-face {
 		font-family: "PC-Senior";
 		src: url(data/pc-senior/pcsenior.ttf)
 	}
+	@keyframes disco-border {
+		0% {
+			border-color: var(--color-purple);
+		}
+		20% {
+			border-color: var(--color-red);
+		}
+		40% {
+			border-color: var(--color-orange);
+		}
+		60% {
+			border-color: var(--color-yellow);
+		}
+		80% {
+			border-color: var(--color-teal);
+		}
+	}
+	@keyframes glow-sticks {
+		0% {
+			background-color: var(--color-orange);
+		}
+		80% {
+			background-color: var(--color-orange);
+		}
+		90% {
+			background-color: var(--color-yellow);
+		}
+	}
+	@keyframes back-splash { 
+		0% {
+			background-position:0% 50%;
+		}
+		50% {
+			background-position:100% 50%;
+		}
+	}
+	@keyframes bounce {
+		0% {
+			transform: scaleY(1);
+		}
+		15% {
+			transform: scaleY(0.8);
+		}
+		30% {
+			transform: scaleY(0.95);
+		}
+	}
+
 	html, body {
 		height: 100%;
 		margin: 0;
@@ -20,6 +75,8 @@
 		flex-wrap: nowrap;
 		justify-content: center;
 		align-items: center;
+		background: black;
+	}
 	.status {
 		font-family: "PC-Senior";
 		font-size: 24px;
@@ -33,7 +90,17 @@
 		position: relative;
 		width: 1026px;
 		height: 684px;
-		background: black;
+
+		/* oooohhh yeahhhh */
+		border: 16px ridge var(--color-purple);
+		background: linear-gradient(270deg, #061927, #1c313f, #161729);
+		background-size: 600% 600%;
+
+		animation-name: disco-border, back-splash;
+		animation-duration: 10s, 30s;
+		animation-iteration-count: infinite;
+
+		/* transform: rotate3d(0.707707, 0.707707, 0, 40deg); */
 	}
 	.stick {
 		position: absolute;
@@ -61,6 +128,7 @@
 	.actor {
 		position: absolute;
 		z-index: 3;
+		animation: bounce 0.46875s infinite;
 	}
 	.blarb {
 		box-sizing: border-box;
