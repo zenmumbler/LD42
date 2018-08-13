@@ -63,10 +63,53 @@
 			transform: scaleY(0.95);
 		}
 	}
+	@keyframes box-flow {
+		0% {
+			background-position:0% 0%;
+		}
+		24.999% {
+			background-position:0% 0%;
+		}
+		25% {
+			background-position:0% 50%;
+		}
+		49.999% {
+			background-position:0% 50%;
+		}
+		50% {
+			background-position:0% 100%;
+		}
+		74.999% {
+			background-position:0% 100%;
+		}
+		75% {
+			background-position:0% 150%;
+		}
+		100% {
+			background-position:0% 150%;
+		}
+	}
+	@keyframes blink {
+		0% {
+			opacity: 1;
+		}
+		49.999% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		99.999% {
+			opacity: 0;
+		}
+	}
 
 	html, body {
 		height: 100%;
 		margin: 0;
+	}
+	.hidden {
+		display: none !important;
 	}
 	.root {
 		height: 100%;
@@ -102,6 +145,39 @@
 
 		/* transform: rotate3d(0.707707, 0.707707, 0, 40deg); */
 	}
+	p {
+		font-family: "PC-Senior";
+		font-size: 24px;
+		color: white;
+		line-height: 1.6em;
+	}
+	button {
+		font-family: "PC-Senior";
+		font-size: 36px;
+		border: 4px ridge var(--color-orange);
+		color: white;
+		background-color: black;
+		padding: 16px 24px;
+		cursor: pointer;
+	}
+	button:hover {
+		background-color: var(--color-yellow);
+		color: var(--color-teal);
+	}
+	.intro {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		justify-content: space-around;
+		align-items: center;
+		position: relative;
+		z-index: 100;	
+		min-height: 100%;
+		-webkit-backdrop-filter: blur(12px);
+	}
+	.cta {
+		animation: blink 1.875s infinite;
+	}
 	.stick {
 		position: absolute;
 		z-index: 1;
@@ -111,7 +187,7 @@
 		transform-origin: center center;
 		transform: translate(-53px, -2px);
 		transition: transform 64ms linear;
-		animation: glow-sticks 4s infinite;
+		/* animation: glow-sticks 4s infinite; */
 	}
 	.stick::before {
 		content: "";
@@ -126,21 +202,57 @@
 	.stick.vert {
 		transform: translate(-53px, -2px) rotateZ(90deg);
 	}
+	.stick.frozen {
+		display: none;
+	}
+	.box {
+		position: absolute;
+		z-index: 4;
+		width: 114px;
+		height: 114px;
+		box-sizing: border-box;
+
+		border: 8px groove var(--color-purple);
+		background-image: url(data/boxbg.png);
+		background-size: 200% 200%;
+		animation-name: disco-border, box-flow;
+		animation-duration: 10s, 1.875s;
+		animation-iteration-count: infinite;
+	}
 	.actor {
 		position: absolute;
 		z-index: 3;
 		animation: bounce 0.46875s infinite;
-	}
-	.blarb {
+		animation-delay: 0.3s;
+
 		box-sizing: border-box;
+		border: 5px solid transparent;
 		width: 57px;
 		height: 57px;
-		border: 5px solid transparent;
-		background: green;
 		background-clip: content-box;
 		transition-property: left top;
-		transition-duration: 64ms;
+		transition-duration: 117ms;
 		transition-timing-function: linear;
+		overflow: hidden;
+		border-radius: 8px;
+	}
+	.blarb {
+		background-color: green;
+	}
+	.blarb::before {
+		display: block;
+		content: "👁";
+		font-size: 36px;
+		text-align: center;
+	}
+	.mipmip {
+		background-color: orange;
+	}
+	.mipmip::before {
+		display: block;
+		content: "👺";
+		font-size: 36px;
+		text-align: center;
 	}
 </style>
 
@@ -149,16 +261,41 @@
 
 <div class="root">
 	<div class="game">
-		<div class="status">
+		<div class="loading">
+			<p>Please wait, loading (about 6 MB)...</p>
+		</div>
+		<div class="launch hidden">
+			<p>To play Blarbs!, please press the button below.<br>
+				This is to ensure audio will play in the game.<br>
+			</p>
+			<p><button>Start Blarbs!</button></p>
+		</div>
+		
+		<div class="status hidden">
 			Blarbs!
 		</div>
-		<div class="arena"></div>
+		<div class="arena hidden">
+			<div class="intro">
+				<p><img src="data/blarbs.png" alt="Blarbs!"></p>
+				
+				<p class="cta">Press space to begin!</p>
+				<p style="font-size: 12px;">arrow keys to move - you move at twice the speed of the music</p>
+			</div>
+		</div>
 	</div>
 </div>
 
 <script type="module">
-import { main } from "./dist/ld42.js";
-document.body.onload = () => main();
+import { main, start } from "./dist/ld42.js";
+document.body.onload = () => {
+	main().then(() => {
+		document.querySelector(".loading").classList.add("hidden");
+		document.querySelector(".launch").classList.remove("hidden");
+	});
+}
+document.querySelector("button").onclick = () => {
+	start(true);
+};
 </script>
 </body>
 </html>
