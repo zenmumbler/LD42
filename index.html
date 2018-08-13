@@ -5,6 +5,10 @@
 <title>Blarbs</title>
 
 <style>
+	@font-face {
+		font-family: "PC-Senior";
+		src: url(data/pc-senior/pcsenior.ttf)
+	}
 	html, body {
 		height: 100%;
 		margin: 0;
@@ -16,6 +20,11 @@
 		flex-wrap: nowrap;
 		justify-content: center;
 		align-items: center;
+	.status {
+		font-family: "PC-Senior";
+		font-size: 24px;
+		color: white;
+		padding: 8px 0;
 	}
 	/*
 	Grid size: 18x12, 57x57 pixels each
@@ -70,7 +79,12 @@
 <body>
 
 <div class="root">
-	<section class="arena"></section>
+	<div class="game">
+		<div class="status">
+			Blarbs!
+		</div>
+		<div class="arena"></div>
+	</div>
 </div>
 
 <script type="module">
