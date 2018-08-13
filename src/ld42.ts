@@ -101,17 +101,36 @@ export function main() {
 		const stickCoord = arena.stickCoordAffectingDirection(blarbX, blarbY, dir);
 		if (stickCoord) {
 			if (dir < Direction.UP) {
-				arena.setStickOrientationAt(stickCoord[0], stickCoord[1], Stick.Horiz);
-				const elem = view.stickElemAt(stickCoord[0], stickCoord[1]);
-				if (elem) {
-					elem.classList.remove("vert");
+				if (arena.stickOrientationAt(stickCoord[0], stickCoord[1]) === Stick.Vert) {
+					arena.setStickOrientationAt(stickCoord[0], stickCoord[1], Stick.Horiz);
+					const elem = view.stickElemAt(stickCoord[0], stickCoord[1]);
+					if (elem) {
+						elem.classList.remove("vert");
+					}
+
+					const boxCheckDir = (stickCoord[1] <= blarbY) ? Direction.UP : Direction.DOWN;
+					const boxQuad = arena.quadRelativeToStickAt(stickCoord[0], stickCoord[1], boxCheckDir);
+					if (arena.quadIsBox(boxQuad)) {
+						console.info("BOX! ^v");
+						arena.freezeQuad(boxQuad);
+					}
 				}
 			}
 			else {
-				arena.setStickOrientationAt(stickCoord[0], stickCoord[1], Stick.Vert);
-				const elem = view.stickElemAt(stickCoord[0], stickCoord[1]);
-				if (elem) {
-					elem.classList.add("vert");
+				if (arena.stickOrientationAt(stickCoord[0], stickCoord[1]) === Stick.Horiz) {
+
+					arena.setStickOrientationAt(stickCoord[0], stickCoord[1], Stick.Vert);
+					const elem = view.stickElemAt(stickCoord[0], stickCoord[1]);
+					if (elem) {
+						elem.classList.add("vert");
+					}
+
+					const boxCheckDir = (stickCoord[0] <= blarbX) ? Direction.LEFT : Direction.RIGHT;
+					const boxQuad = arena.quadRelativeToStickAt(stickCoord[0], stickCoord[1], boxCheckDir);
+					if (arena.quadIsBox(boxQuad)) {
+						console.info("BOX! <>");
+						arena.freezeQuad(boxQuad);
+					}
 				}
 			}
 		}
