@@ -79,7 +79,7 @@ export class Sound {
 			this.musicSource.buffer = intro ? this.assets_.intro : this.assets_.music;
 			this.musicSource.loop = true;
 			this.musicSource.connect(this.musicGain);
-			this.musicGain.gain.value = 0.60;
+			this.musicGain.gain.value = 0.80;
 
 			this.musicSource.start(0);
 		}

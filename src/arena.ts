@@ -108,6 +108,13 @@ export class Arena {
 		} 
 	}
 
+	toggleStickOrientationAt(x: number, y: number) {
+		const offset = this.stickArrayOffset(x, y);
+		if (offset > -1 && this.sticks_[offset] !== Stick.None) {
+			this.sticks_[offset] = this.sticks_[offset] === Stick.Horiz ? Stick.Vert : Stick.Horiz;
+		} 
+	}
+
 	freezeStickAt(x: number, y: number) {
 		const offset = this.stickArrayOffset(x, y);
 		if (offset > -1 && this.sticks_[offset] !== Stick.None) {
